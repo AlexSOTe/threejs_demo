@@ -21,4 +21,5 @@ tools/nginx-1.12.2/temp/**/*
 *.suo
 *.ntvs*
 *.njsproj
+*.njsproj.user
 *.sln
