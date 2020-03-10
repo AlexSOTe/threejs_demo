@@ -33,7 +33,7 @@ const config = {
     compress: true,
     hot: true,
     host: 'localhost',
-    port: 9000
+    port: 9000,
     // open: true // 自动在浏览器中打开
   },
   resolve: {
