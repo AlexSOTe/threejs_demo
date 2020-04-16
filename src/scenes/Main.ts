@@ -93,6 +93,17 @@ function MainScene() {
     } else {
       distance += 0.0001
     }
+    if (linePoint > 1000) {
+      linePoint = 0
+    } else {
+      // 控制点的密度
+      linePoint += 0.05
+    }
+    if (nameNym > 100000000) {
+      nameNym = 0
+    } else {
+      nameNym += 1
+    }
     light.position.set(
       Math.cos(d * 10) * distance,
       0,
@@ -106,17 +117,6 @@ function MainScene() {
     sphereM.color = new Color(Math.random() * 0xffffff);
 
 
-    if (linePoint > 1000) {
-      linePoint = 0
-    } else {
-      // 控制点的密度
-      linePoint += 0.05
-    }
-    if (nameNym > 100000000) {
-      nameNym = 0
-    } else {
-      nameNym += 1
-    }
     const point: Mesh = new Mesh(pointG, new MeshBasicMaterial({
       color: Math.random() * 0xffffff
     }));
