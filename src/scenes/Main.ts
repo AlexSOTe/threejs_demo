@@ -1,4 +1,4 @@
-import { Scene, Mesh, Color, MeshLambertMaterial, SphereGeometry, PointLight, AxesHelper, OrbitControls } from "three";
+import { Scene, Mesh, Color, MeshLambertMaterial, SphereGeometry, PointLight, AxesHelper, OrbitControls, MeshBasicMaterial, Vector3 } from "three";
 import renderer from "../components/Renderer";
 import camera from "../components/Camera";
 import { TwoPointDistance3D } from "../utils/tools";
@@ -19,7 +19,7 @@ function MainScene() {
   controls.enableZoom = true
   //是否自动旋转
   controls.autoRotate = true
-  controls.autoRotateSpeed = 0.05
+  controls.autoRotateSpeed = 5
   //设置相机距离原点的最远距离
   controls.minDistance = 10
   //设置相机距离原点的最远距离
@@ -27,8 +27,8 @@ function MainScene() {
   //是否开启右键拖拽
   controls.enablePan = true
 
-  const axes: AxesHelper = new AxesHelper(1000)
-  mainScene.add(axes)
+  //const axes: AxesHelper = new AxesHelper(1000)
+  //mainScene.add(axes)
 
   const light: PointLight = new PointLight(0xffffff, 2, 2000, 1)
   //light.position.set(-500, 0, -500)
@@ -57,11 +57,26 @@ function MainScene() {
     }
   }
 
+  const sphereG: SphereGeometry = new SphereGeometry(5, 20, 20)
+  const sphereM: MeshBasicMaterial = new MeshBasicMaterial({
+    color: 0xff0000
+  })
+  const sphere: Mesh = new Mesh(sphereG, sphereM);
+  sphere.position.set(150, 0, 0)
+  mainScene.add(sphere);
+
+
+
+  const pointG: SphereGeometry = new SphereGeometry(1, 20, 20)
+
+
 
   // 旋转角度
   let d = 0
   // 旋转物体 距 旋转点 的距离
-  let distance = 200
+  let distance = 0
+  let linePoint = 0
+  let nameNym = 0
   // 动起来，让世界为你喝彩
   function Animate() {
     renderer.render(mainScene, camera)
@@ -71,13 +86,47 @@ function MainScene() {
     if (d > 1000000) {
       d = 0
     } else {
-      d += 0.0002
+      d += 0.02
+    }
+    if (distance > 500) {
+      distance = 0
+    } else {
+      distance += 0.0001
     }
     light.position.set(
       Math.cos(d * 10) * distance,
       0,
       Math.sin(d * 10) * distance
     )
+
+    let posx = Math.cos(d * 10) * linePoint
+    let posy = Math.sin(nameNym) * 20
+    let posz = Math.sin(d * 10) * linePoint
+    sphere.position.set(posx, posy, posz)
+    sphereM.color = new Color(Math.random() * 0xffffff);
+
+
+    if (linePoint > 1000) {
+      linePoint = 0
+    } else {
+      // 控制点的密度
+      linePoint += 0.05
+    }
+    if (nameNym > 100000000) {
+      nameNym = 0
+    } else {
+      nameNym += 1
+    }
+    const point: Mesh = new Mesh(pointG, new MeshBasicMaterial({
+      color: Math.random() * 0xffffff
+    }));
+    point.name = `linePoint_${nameNym}`
+    point.position.set(posx, posy, posz)
+    mainScene.add(point);
+    setTimeout(() => {
+      const delObj = mainScene.getObjectByName(point.name)
+      delObj && mainScene.remove(delObj);
+    }, 30000)
   }
   Animate()
 }
