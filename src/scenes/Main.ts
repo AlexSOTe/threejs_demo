@@ -36,14 +36,15 @@ function MainScene() {
   mainScene.add(light)
 
 
-  let starG: SphereGeometry = new SphereGeometry((Math.random() + 1) / 5, 20, 20, 20)
+  let starG: SphereGeometry = new SphereGeometry((Math.random() + 1) / 5, 10, 10, 10)
   let starM: MeshLambertMaterial = new MeshLambertMaterial({
-    emissive: 0xffffff,
-    emissiveIntensity: 0.1
+    emissive: new Color(Math.floor(Math.random() * 0xffffff)),
+    emissiveIntensity: 0.1,
+    color: 0xffffff
   })
-  for (var i = 0; i < 10000; i++) {
-    starM.emissive = new Color(Math.floor(Math.random() * 0xffffff))
-    let star: Mesh = new Mesh(starG, starM)
+  let star: Mesh = new Mesh(starG, starM)
+  for (var i = 0; i < 5000; i++) {
+    //starM.color = new Color(Math.floor(Math.random() * 0xffffff))
     star.position.set(
       Math.random() * 1000 - 500,
       Math.random() * 1000 - 500,
@@ -53,7 +54,7 @@ function MainScene() {
     if (p2p > 500 || p2p < 50) {
       continue
     } else {
-      mainScene.add(star)
+      mainScene.add(star.clone())
     }
   }
 
@@ -68,7 +69,6 @@ function MainScene() {
 
 
   const pointG: SphereGeometry = new SphereGeometry(1, 20, 20)
-
 
 
   // 旋转角度
@@ -111,15 +111,15 @@ function MainScene() {
     )
 
     let posx = Math.cos(d * 10) * linePoint
-    let posy = Math.sin(nameNym) * 20
+    let posy = nameNym * 0.01 * Math.sin(nameNym)
     let posz = Math.sin(d * 10) * linePoint
     sphere.position.set(posx, posy, posz)
     sphereM.color = new Color(Math.random() * 0xffffff);
 
-
     const point: Mesh = new Mesh(pointG, new MeshBasicMaterial({
       color: Math.random() * 0xffffff
     }));
+
     point.name = `linePoint_${nameNym}`
     point.position.set(posx, posy, posz)
     mainScene.add(point);
