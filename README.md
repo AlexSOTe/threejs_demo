@@ -9,4 +9,4 @@ threejs demo
 ##
 ``> npm i``
 ##
-``> npm run dev``
+``> npm run start``
