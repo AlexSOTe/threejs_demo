@@ -93,7 +93,7 @@ class MainScene {
     } else {
       this.d += 0.01;
     }
-    if (this.distance > 1000) {
+    if (this.distance > 2000) {
       this.distance = 0;
     } else {
       this.distance += 0.1;
@@ -108,9 +108,9 @@ class MainScene {
     let posx = Math.cos(this.d * 10) * this.distance;
     let posy = this.nameNym * 0.03 * Math.sin(this.nameNym);
     let posz = Math.sin(this.d * 10) * this.distance;
-    this.light.position.set(posx, posy, -posz);
+    this.light.position.set(posx, 100, posz);
 
-    const point: Mesh = new Mesh(this.pointG, new MeshLambertMaterial({
+    const point: Mesh = new Mesh(this.pointG, new MeshBasicMaterial({
       color: Math.random() * 0xffffff
     }));
 
