@@ -12,6 +12,7 @@ class MainScene {
   light: PointLight;
   // 鼠标控制
   controls: OrbitControls;
+  // 星星的Geometry
   pointG: SphereGeometry;
   animationHandler?: number;
 
@@ -91,12 +92,12 @@ class MainScene {
     if (this.d > 1000000) {
       this.d = 0;
     } else {
-      this.d += 0.01;
+      this.d += 0.02;
     }
     if (this.distance > 2000) {
       this.distance = 0;
     } else {
-      this.distance += 0.1;
+      this.distance += 0.4;
     }
     // 设置球球的name
     if (this.nameNym > 100000000) {
@@ -104,23 +105,24 @@ class MainScene {
     } else {
       this.nameNym += 1;
     }
-
     let posx = Math.cos(this.d * 10) * this.distance;
-    let posy = this.nameNym * 0.03 * Math.sin(this.nameNym);
+    let posy = Math.sqrt(this.distance) * Math.sin(this.d) * 10;
     let posz = Math.sin(this.d * 10) * this.distance;
     this.light.position.set(posx, 100, posz);
 
     const point: Mesh = new Mesh(this.pointG, new MeshBasicMaterial({
       color: Math.random() * 0xffffff
     }));
-
     point.name = `main_distance_${this.nameNym}`;
     point.position.set(posx, posy, posz);
+    let scale = (Math.random() + 1) * 2;
+    console.log(scale);
+    point.scale.set(scale, scale, scale);
     mainScene.add(point);
     setTimeout(() => {
       const delObj = mainScene.getObjectByName(point.name);
       delObj && mainScene.remove(delObj);
-    }, 60000);
+    }, 300000);
   }
   Pause() {
     this.starting = false;
