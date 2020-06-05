@@ -60,7 +60,7 @@ class MainScene {
     this.controls.enablePan = true;
   }
   AddStar() {
-    let starG: SphereGeometry = new SphereGeometry((Math.random() + 1) / 1, 10, 10, 10);
+    let starG: SphereGeometry = new SphereGeometry((Math.random() + 1) / 2, 10, 10, 10);
     let starM: MeshLambertMaterial = new MeshLambertMaterial({
       emissive: new Color(Math.floor(Math.random() * 0xffffff)),
       emissiveIntensity: 0.1,
