@@ -15,11 +15,11 @@ class MainScene {
   pointG: SphereGeometry;
   animationHandler?: number;
 
-  // 旋转角度
+  // 描点时，描点位置和原点连线的旋转角度
   d: number = 0;
-  // 旋转物体 距 旋转点 的距离
+  // 控制点的密度，越小越密集
   distance: number = 0;
-  linePoint: number = 0;
+  // 星星的名字
   nameNym: number = 0;
 
   starting: boolean = false;
@@ -31,7 +31,7 @@ class MainScene {
   Init() {
     this.InitLight();
     this.InitControls();
-    this.AddStar();
+    //this.AddStar();
     // 添加坐标轴
     //mainScene.add(new AxesHelper(1000));
   }
@@ -51,7 +51,7 @@ class MainScene {
     this.controls.enableZoom = true;
     //是否自动旋转
     this.controls.autoRotate = true;
-    this.controls.autoRotateSpeed = 5;
+    this.controls.autoRotateSpeed = 1;
     //设置相机距离原点的最远距离
     this.controls.minDistance = 10;
     //设置相机距离原点的最远距离
@@ -91,39 +91,30 @@ class MainScene {
     if (this.d > 1000000) {
       this.d = 0;
     } else {
-      this.d += 0.02;
+      this.d += 0.01;
     }
-    if (this.distance > 500) {
+    if (this.distance > 1000) {
       this.distance = 0;
     } else {
-      this.distance += 0.0001;
+      this.distance += 0.1;
     }
-    if (this.linePoint > 1000) {
-      this.linePoint = 0;
-    } else {
-      // 控制点的密度
-      this.linePoint += 0.1;
-    }
+    // 设置球球的name
     if (this.nameNym > 100000000) {
       this.nameNym = 0;
     } else {
       this.nameNym += 1;
     }
-    this.light.position.set(
-      Math.cos(this.d * 10) * this.distance,
-      0,
-      Math.sin(this.d * 10) * this.distance
-    );
 
-    let posx = Math.cos(this.d * 10) * this.linePoint;
+    let posx = Math.cos(this.d * 10) * this.distance;
     let posy = this.nameNym * 0.03 * Math.sin(this.nameNym);
-    let posz = Math.sin(this.d * 10) * this.linePoint;
+    let posz = Math.sin(this.d * 10) * this.distance;
+    this.light.position.set(posx, posy, -posz);
 
-    const point: Mesh = new Mesh(this.pointG, new MeshBasicMaterial({
+    const point: Mesh = new Mesh(this.pointG, new MeshLambertMaterial({
       color: Math.random() * 0xffffff
     }));
 
-    point.name = `main_linePoint_${this.nameNym}`;
+    point.name = `main_distance_${this.nameNym}`;
     point.position.set(posx, posy, posz);
     mainScene.add(point);
     setTimeout(() => {
@@ -134,18 +125,6 @@ class MainScene {
   Pause() {
     this.starting = false;
     this.animationHandler && cancelAnimationFrame(this.animationHandler);
-  }
-  Reset() {
-    this.starting = false;
-    this.Pause();
-    this.d = 0;
-    this.distance = 0;
-    this.linePoint = 0;
-    this.nameNym = 0;
-    mainScene.children.map((v, i, a) => {
-      if (/^main_/.test(v.name)) mainScene.remove(v);
-    });
-    renderer.clear();
   }
 }
 export {

@@ -11,18 +11,6 @@ window.addEventListener('load', () => {
   mainScene.Init();
   mainScene.Start();
 
-  document.querySelector("#start")?.addEventListener("click", () => {
-    mainScene.Start();
-  })
-  document.querySelector("#pause")?.addEventListener("click", () => {
-    mainScene.Pause();
-  })
-  // 有问题
-  //document.querySelector("#reset")?.addEventListener("click", () => {
-  //  mainScene.Reset();
-  //})
-
-
   window.addEventListener('resize', () => {
     // 以下三行保证 resize 时场景保持不变形
     camera.aspect = window.innerWidth / window.innerHeight;
