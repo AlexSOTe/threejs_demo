@@ -1,11 +1,11 @@
-import { Scene, Mesh, Color, MeshLambertMaterial, SphereGeometry, PointLight, AxesHelper, OrbitControls, MeshBasicMaterial, Vector3, Object3D } from "three";
+import { Scene, Mesh, Color, MeshLambertMaterial, SphereGeometry, PointLight, AxesHelper, OrbitControls, MeshBasicMaterial, Vector3, Object3D, ImageUtils, MeshPhongMaterial, Fog, MeshPhysicalMaterial } from "three";
 import renderer from "../components/Renderer";
 import camera from "../components/Camera";
 import { TwoPointDistance3D } from "../utils/tools";
 
 // 场景
 const mainScene: Scene = new Scene();
-// scene.fog = new Fog(0xffffff, 0.1, 1000);
+//mainScene.fog = new Fog(0xff0000, 0.1, 1000);
 
 class MainScene {
   // 灯光
@@ -25,10 +25,10 @@ class MainScene {
   // 是否正在播放
   starting: boolean = false;
   // 星云体积
-  nebulaVolume: number = 1000;
+  nebulaVolume: number = 10000;
 
   constructor() {
-    this.light = new PointLight(0xffffff, 2, 2000, 1);
+    this.light = new PointLight(0xffffff, 20, 10000, 1);
     this.controls = new OrbitControls(camera, renderer.domElement);
     this.pointG = new SphereGeometry(1, 20, 20);
   }
@@ -36,6 +36,7 @@ class MainScene {
     this.InitLight();
     this.InitControls();
     this.AddStar();
+    this.AddSun();
     // 添加坐标轴
     //mainScene.add(new AxesHelper(1000));
   }
@@ -55,20 +56,33 @@ class MainScene {
     this.controls.enableZoom = true;
     //是否自动旋转
     this.controls.autoRotate = true;
-    this.controls.autoRotateSpeed = 1;
+    this.controls.autoRotateSpeed = 0.2;
     //设置相机距离原点的最远距离
-    this.controls.minDistance = 10;
+    this.controls.minDistance = 0.1;
     //设置相机距离原点的最远距离
     this.controls.maxDistance = 10000;
     //是否开启右键拖拽
     this.controls.enablePan = true;
   }
+  AddSun() {
+    let texture = ImageUtils.loadTexture('texture/sun.jpg');
+    let sunG: SphereGeometry = new SphereGeometry(200, 100, 100);
+    let sunM: MeshPhysicalMaterial = new MeshPhysicalMaterial({
+      emissive: new Color(0xffffff), // emissive默认黑色，设置为白色
+      emissiveMap: texture,
+      emissiveIntensity: 1.1,
+      //wireframe: true,
+    });
+    sunM.opacity = 0.3;
+    let sun: Mesh = new Mesh(sunG, sunM);
+    sun.position.set(0, 0, 0);
+    mainScene.add(sun);
+  }
   AddStar() {
-    let starG: SphereGeometry = new SphereGeometry((Math.random() + this.nebulaVolume / 800) / 2, 8, 10, 10);
+    let starG: SphereGeometry = new SphereGeometry((Math.random() + this.nebulaVolume / 500) / 2, 8, 10, 10);
     let starM: MeshLambertMaterial = new MeshLambertMaterial({
-      emissive: new Color(Math.floor(Math.random() * 0xffffff)),
-      emissiveIntensity: 0.1,
-      color: 0xffffff
+      emissive: new Color(0xffffff),
+      emissiveIntensity: 0
     });
     let star: Mesh = new Mesh(starG, starM);
     for (var i = 0; i < 20000; i++) {
@@ -79,7 +93,7 @@ class MainScene {
         Math.random() * this.nebulaVolume * 2 - this.nebulaVolume
       );
       let p2p = TwoPointDistance3D(mainScene.position, star.position);
-      if (p2p > this.nebulaVolume) {
+      if (p2p < 500) {
         continue
       } else {
         mainScene.add(star.clone());
@@ -113,7 +127,6 @@ class MainScene {
     point.name = `main_distance_${this.nameNym}`;
     point.position.set(posx, posy, posz);
     let scale = (Math.random() + 1) * 2;
-    console.log(scale);
     point.scale.set(scale, scale, scale);
     mainScene.add(point);
     setTimeout(() => {
@@ -127,7 +140,8 @@ class MainScene {
     this.animationHandler = requestAnimationFrame(() => this.Start());
     this.controls.update();
 
-    this.AddSomething()
+    // // 画线
+    // this.AddSomething()
   }
   Pause() {
     this.starting = false;
