@@ -22,8 +22,11 @@ class MainScene {
   distance: number = 0;
   // 星星的名字
   nameNym: number = 0;
-
+  // 是否正在播放
   starting: boolean = false;
+  // 星云体积
+  nebulaVolume: number = 1000;
+
   constructor() {
     this.light = new PointLight(0xffffff, 2, 2000, 1);
     this.controls = new OrbitControls(camera, renderer.domElement);
@@ -32,7 +35,7 @@ class MainScene {
   Init() {
     this.InitLight();
     this.InitControls();
-    //this.AddStar();
+    this.AddStar();
     // 添加坐标轴
     //mainScene.add(new AxesHelper(1000));
   }
@@ -61,7 +64,7 @@ class MainScene {
     this.controls.enablePan = true;
   }
   AddStar() {
-    let starG: SphereGeometry = new SphereGeometry((Math.random() + 1) / 2, 10, 10, 10);
+    let starG: SphereGeometry = new SphereGeometry((Math.random() + this.nebulaVolume / 800) / 2, 8, 10, 10);
     let starM: MeshLambertMaterial = new MeshLambertMaterial({
       emissive: new Color(Math.floor(Math.random() * 0xffffff)),
       emissiveIntensity: 0.1,
@@ -71,24 +74,19 @@ class MainScene {
     for (var i = 0; i < 20000; i++) {
       //starM.color = new Color(Math.floor(Math.random() * 0xffffff))
       star.position.set(
-        Math.random() * 1000 - 500,
-        Math.random() * 1000 - 500,
-        Math.random() * 1000 - 500
+        Math.random() * this.nebulaVolume * 2 - this.nebulaVolume,
+        Math.random() * this.nebulaVolume * 2 - this.nebulaVolume,
+        Math.random() * this.nebulaVolume * 2 - this.nebulaVolume
       );
       let p2p = TwoPointDistance3D(mainScene.position, star.position);
-      if (p2p > 500 || p2p < 50) {
+      if (p2p > this.nebulaVolume) {
         continue
       } else {
         mainScene.add(star.clone());
       }
     }
   }
-  Start() {
-    this.starting = true;
-    renderer.render(mainScene, camera);
-    this.animationHandler = requestAnimationFrame(() => this.Start());
-    this.controls.update();
-
+  AddSomething() {
     if (this.d > 1000000) {
       this.d = 0;
     } else {
@@ -106,9 +104,8 @@ class MainScene {
       this.nameNym += 1;
     }
     let posx = Math.cos(this.d * 10) * this.distance;
-    let posy = Math.sqrt(this.distance) * Math.sin(this.d) * 10;
+    let posy = Math.sin(this.d * 100) * this.d * 5;
     let posz = Math.sin(this.d * 10) * this.distance;
-    this.light.position.set(posx, 100, posz);
 
     const point: Mesh = new Mesh(this.pointG, new MeshBasicMaterial({
       color: Math.random() * 0xffffff
@@ -123,6 +120,14 @@ class MainScene {
       const delObj = mainScene.getObjectByName(point.name);
       delObj && mainScene.remove(delObj);
     }, 300000);
+  }
+  Start() {
+    this.starting = true;
+    renderer.render(mainScene, camera);
+    this.animationHandler = requestAnimationFrame(() => this.Start());
+    this.controls.update();
+
+    this.AddSomething()
   }
   Pause() {
     this.starting = false;
