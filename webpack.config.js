@@ -24,9 +24,11 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({ template: './src/index.html' }),
     new webpack.HotModuleReplacementPlugin(),
-    new CopyWebpackPlugin([{
-      from: './src/assets'
-    }])
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: './src/assets' }
+      ]
+    })
   ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
