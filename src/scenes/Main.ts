@@ -1,5 +1,6 @@
-import { Scene, Mesh, Color, MeshLambertMaterial, SphereGeometry, PointLight, AxesHelper, MeshBasicMaterial, Vector3, Object3D, ImageUtils, MeshPhongMaterial, Fog, MeshPhysicalMaterial, Geometry, LineBasicMaterial, Line, SplineCurve, Line3, PerspectiveCamera, CameraHelper, OrthographicCamera } from "three";
+import { Scene, Mesh, Color, MeshLambertMaterial, SphereGeometry, PointLight, AxesHelper, MeshBasicMaterial, Vector3, Object3D, ImageUtils, MeshPhongMaterial, Fog, MeshPhysicalMaterial, Geometry, LineBasicMaterial, Line, SplineCurve, Line3, PerspectiveCamera, CameraHelper, OrthographicCamera, ParametricGeometry, Sprite, SpriteMaterial } from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import Stats from 'three/examples/jsm/libs/stats.module'
 import renderer from "../components/Renderer";
 import { TwoPointDistance3D, GetUrlParams } from "../utils/tools";
 
@@ -35,6 +36,7 @@ class MainScene {
   // 第二个相机
   camera2: PerspectiveCamera;
   earthRotateDistance: number = 0;
+  stats: Stats;
 
   constructor() {
     this.light = new PointLight(0xffffff, 20, 10000, 1);
@@ -45,12 +47,15 @@ class MainScene {
     this.sun = this.InitSun();
     this.earth = this.InitEarth();
     this.camera2 = this.InitCamera2();
+    this.stats = Stats();
   }
   Init() {
     this.InitLight();
     this.InitControls();
     // 星云
     this.AddStar();
+    // 粒子
+    this.AddSprite();
     //// 线
     //this.AddLines();
     // 添加太阳
@@ -59,7 +64,21 @@ class MainScene {
     this.AddCamera2();
     // 添加坐标轴
     mainScene.add(new AxesHelper(10000));
+    // 添加fps监控
+    this.InitStats();
 
+    let texture = ImageUtils.loadTexture('texture/ss.gif');
+    let point = new Sprite(new SpriteMaterial({
+      color: 0xffffff,
+      map: texture,
+      opacity: 1
+    }));
+    point.position.set(300, 300, 300);
+    point.scale.set(500, 500, 500);
+    mainScene.add(point);
+  }
+  InitStats() {
+    document.body.appendChild(this.stats.dom);
   }
   InitCamera2() {
     let camera2 = new PerspectiveCamera(100, 1, 1, 5000);
@@ -69,8 +88,8 @@ class MainScene {
   }
   AddCamera2() {
     this.camera2.lookAt(mainScene.position);
-    let helpCamera = new CameraHelper(this.camera2);
-    mainScene.add(helpCamera);
+    //let helpCamera = new CameraHelper(this.camera2);
+    mainScene.add(this.camera2);
   }
   InitMainCamera() {
     /**
@@ -127,7 +146,7 @@ class MainScene {
     this.controls.enableZoom = true;
     //是否自动旋转
     this.controls.autoRotate = true;
-    this.controls.autoRotateSpeed = 0.2;
+    this.controls.autoRotateSpeed = 0.6;
     //设置相机距离原点的最远距离
     this.controls.minDistance = 0.1;
     //设置相机距离原点的最远距离
@@ -188,6 +207,9 @@ class MainScene {
       }
     }
   }
+  AddSprite() {
+
+  }
   AddLines() {
     let lineG = new Geometry();
     let lineM = new LineBasicMaterial({
@@ -244,6 +266,8 @@ class MainScene {
   Start() {
     this.starting = true;
     renderer.clear();
+    // 更新fps监控
+    this.stats.update();
     // 渲染主相机
     renderer.setViewport(0, 0, vw, vh)
     renderer.render(mainScene, this.mainCamera);
@@ -257,9 +281,11 @@ class MainScene {
       Math.cos(this.earthRotateDistance) * 800,
       0,
       Math.sin(this.earthRotateDistance) * 800
-    )
-    this.camera2.lookAt(this.earth.position)
+    );
+    this.camera2.lookAt(this.earth.position);
 
+    this.sun.rotation.y += 1;
+    this.sun.rotation.z += 1;
     // 画一些东西
     //this.AddSomething()
 
