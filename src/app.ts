@@ -1,4 +1,3 @@
-import './libs/plugins';
 import { AppConfig } from './app.config';
 import renderer from './components/Renderer';
 import { MainScene } from './scenes/main';

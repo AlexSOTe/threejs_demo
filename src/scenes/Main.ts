@@ -1,4 +1,5 @@
-import { Scene, Mesh, Color, MeshLambertMaterial, SphereGeometry, PointLight, AxesHelper, OrbitControls, MeshBasicMaterial, Vector3, Object3D, ImageUtils, MeshPhongMaterial, Fog, MeshPhysicalMaterial, Geometry, LineBasicMaterial, Line, SplineCurve, Line3, PerspectiveCamera, CameraHelper, OrthographicCamera } from "three";
+import { Scene, Mesh, Color, MeshLambertMaterial, SphereGeometry, PointLight, AxesHelper, MeshBasicMaterial, Vector3, Object3D, ImageUtils, MeshPhongMaterial, Fog, MeshPhysicalMaterial, Geometry, LineBasicMaterial, Line, SplineCurve, Line3, PerspectiveCamera, CameraHelper, OrthographicCamera } from "three";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import renderer from "../components/Renderer";
 import { TwoPointDistance3D, GetUrlParams } from "../utils/tools";
 
