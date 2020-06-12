@@ -37,6 +37,8 @@ class MainScene {
   camera2: PerspectiveCamera;
   earthRotateDistance: number = 0;
   stats: Stats;
+  // 海绵宝宝
+  ss: Sprite;
 
   constructor() {
     this.light = new PointLight(0xffffff, 20, 10000, 1);
@@ -48,6 +50,17 @@ class MainScene {
     this.earth = this.InitEarth();
     this.camera2 = this.InitCamera2();
     this.stats = Stats();
+
+
+    let texture = ImageUtils.loadTexture('texture/ss.gif');
+    this.ss = new Sprite(new SpriteMaterial({
+      color: 0xffffff,
+      map: texture,
+      opacity: 1
+    }));
+    this.ss.position.set(300, 300, 300);
+    this.ss.scale.set(500, 500, 500);
+    mainScene.add(this.ss);
   }
   Init() {
     this.InitLight();
@@ -63,19 +76,9 @@ class MainScene {
     this.AddEarth(new Vector3(600, 0, 600));
     this.AddCamera2();
     // 添加坐标轴
-    mainScene.add(new AxesHelper(10000));
+    //mainScene.add(new AxesHelper(10000));
     // 添加fps监控
     this.InitStats();
-
-    let texture = ImageUtils.loadTexture('texture/ss.gif');
-    let point = new Sprite(new SpriteMaterial({
-      color: 0xffffff,
-      map: texture,
-      opacity: 1
-    }));
-    point.position.set(300, 300, 300);
-    point.scale.set(500, 500, 500);
-    mainScene.add(point);
   }
   InitStats() {
     document.body.appendChild(this.stats.dom);
@@ -276,13 +279,20 @@ class MainScene {
     //renderer.render(mainScene, this.camera2.camera);
 
     this.controls.update();
+
     this.earthRotateDistance += 0.01;
-    this.earth.position.set(
+    //this.earth.position.set(
+    //  Math.cos(this.earthRotateDistance) * 800,
+    //  0,
+    //  Math.sin(this.earthRotateDistance) * 800
+    //);
+    //this.camera2.lookAt(this.earth.position);
+
+    this.ss.position.set(
       Math.cos(this.earthRotateDistance) * 800,
       0,
       Math.sin(this.earthRotateDistance) * 800
     );
-    this.camera2.lookAt(this.earth.position);
 
     this.sun.rotation.y += 1;
     this.sun.rotation.z += 1;
