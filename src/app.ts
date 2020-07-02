@@ -1,6 +1,6 @@
 import { AppConfig } from './app.config';
 import renderer from './components/Renderer';
-import { MainScene } from './scenes/main';
+import { MainScene } from './scenes/Main';
 import { PerspectiveCamera } from 'three';
 
 window.addEventListener('load', () => {
